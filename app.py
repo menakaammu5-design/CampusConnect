@@ -7,8 +7,9 @@ import pandas as pd
 # CONFIGURATION
 # =========================================================
 
-API_URL = "https://campusconnect-api-xp25.onrender.com"
 
+API_URL = "https://campusconnect-api-xp25.onrender.com"
+API_URL = "http://127.0.0.1:8000"
 st.set_page_config(
     page_title="CampusConnect",
     page_icon="🎓",

@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from database import get_connection
 from datetime import datetime
 import re
+from database import create_tables, insert_sample_data
 
 
 # =========================================================
@@ -14,6 +15,9 @@ app = FastAPI(
     title="CampusConnect API",
     version="1.0"
 )
+
+create_tables()
+insert_sample_data()
 
 app.add_middleware(
     CORSMiddleware,

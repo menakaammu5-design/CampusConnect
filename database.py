@@ -131,7 +131,7 @@ def insert_sample_data():
         (name, roll_no, department)
         VALUES (?, ?, ?)
     """, (
-        "Menaka",
+        "Admin",
         "CSE001",
         "Computer Science and Engineering"
     ))
