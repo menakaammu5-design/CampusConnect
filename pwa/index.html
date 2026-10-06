@@ -615,8 +615,11 @@ async function loadData() {
         const attendance =
             await apiGet("/attendance");
 
-        const fees =
-            await apiGet("/fees");
+        const feesData =
+    await apiGet("/fees");
+
+       const fees =
+    Array.isArray(feesData) ? feesData[0] : feesData;
 
         const assignments =
             await apiGet("/assignments");
