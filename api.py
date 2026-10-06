@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from database import get_connection
+from database import get_connection, create_tables, insert_sample_data
 from datetime import datetime
 import re
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +13,8 @@ app = FastAPI(
     title="CampusConnect API",
     version="1.0"
 )
-
+create_tables()
+insert_sample_data()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
