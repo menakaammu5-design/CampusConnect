@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#2563eb">
+
+    <meta name="description"
+          content="CampusConnect Student Management App">
+
+    <link rel="manifest" href="manifest.json">
+
+    <title>CampusConnect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .app {
+            display: none;
+        }
+
+        .welcome {
+            margin-bottom: 20px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 5px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .menu button {
+            background: white;
+            color: #2563eb;
+            border: 1px solid #dbeafe;
+        }
+
+        .section {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            margin-bottom: 18px;
+            color: #1d4ed8;
+        }
+
+        .info {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .item {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 7px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .logout {
+            background: #dc2626;
+            margin-top: 15px;
+        }
+
+        .logout:hover {
+            background: #b91c1c;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            .header {
+                font-size: 19px;
+            }
+
+            .login-box {
+                margin: 40px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    🎓 CampusConnect
+</div>
+
+<!-- LOGIN -->
+<div id="loginPage" class="container">
+
+    <div class="login-box">
+
+        <h2>Student Login</h2>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Password"
+        >
+
+        <button onclick="login()">
+            Login
+        </button>
+
+        <div id="loginError" class="error"></div>
+
+    </div>
+
+</div>
+
+
+<!-- MAIN APP -->
+<div id="appPage" class="app">
+
+    <div class="container">
+
+        <div class="welcome">
+            <h2>Welcome, Admin 👋</h2>
+            <p>CampusConnect Student Management App</p>
+        </div>
+
+
+        <!-- DASHBOARD CARDS -->
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Student</h3>
+                <p>Admin</p>
+            </div>
+
+            <div class="card">
+                <h3>Roll No</h3>
+                <p id="rollNo">-</p>
+            </div>
+
+            <div class="card">
+                <h3>Attendance</h3>
+                <p id="attendanceValue">-</p>
+            </div>
+
+            <div class="card">
+                <h3>Pending Assignments</h3>
+                <p id="pendingAssignments">-</p>
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <div class="menu">
+
+            <button onclick="showSection('dashboard')">
+                🏠 Dashboard
+            </button>
+
+            <button onclick="showSection('profile')">
+                👤 Student Profile
+            </button>
+
+            <button onclick="showSection('fees')">
+                💰 Fee Details
+            </button>
+
+            <button onclick="showSection('attendance')">
+                📊 Attendance
+            </button>
+
+            <button onclick="showSection('timetable')">
+                🕐 Timetable
+            </button>
+
+            <button onclick="showSection('assignments')">
+                📝 Assignments
+            </button>
+
+            <button onclick="showSection('announcements')">
+                📢 Announcements
+            </button>
+
+            <button onclick="showSection('events')">
+                🎉 College Events
+            </button>
+
+            <button onclick="showSection('ai')">
+                🤖 AI Assistant
+            </button>
+
+        </div>
+
+
+        <!-- DASHBOARD -->
+
+        <div id="dashboard" class="section active">
+
+            <h2>Dashboard</h2>
+
+            <div class="info">
+                <strong>Name:</strong> Admin
+            </div>
+
+            <div class="info">
+                <strong>Roll No:</strong>
+                <span id="dashboardRoll">-</span>
+            </div>
+
+            <div class="info">
+                <strong>Department:</strong>
+                <span id="dashboardDepartment">-</span>
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div id="profile" class="section">
+
+            <h2>Student Profile</h2>
+
+            <div class="info">
+                <strong>Name:</strong> Admin
+            </div>
+
+            <div class="info">
+                <strong>Roll No:</strong>
+                <span id="profileRoll">-</span>
+            </div>
+
+            <div class="info">
+                <strong>Department:</strong>
+                <span id="profileDepartment">-</span>
+            </div>
+
+        </div>
+
+
+        <!-- FEES -->
+
+        <div id="fees" class="section">
+
+            <h2>Fee Details</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Total Fee</h3>
+                    <p id="totalFee">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Paid Fee</h3>
+                    <p id="paidFee">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Balance Fee</h3>
+                    <p id="balanceFee">₹0</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ATTENDANCE -->
+
+        <div id="attendance" class="section">
+
+            <h2>Attendance</h2>
+
+            <div id="attendanceList">
+                <div class="loading">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- TIMETABLE -->
+
+        <div id="timetable" class="section">
+
+            <h2>Timetable</h2>
+
+            <div id="timetableList">
+                <div class="loading">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ASSIGNMENTS -->
+
+        <div id="assignments" class="section">
+
+            <h2>Assignments</h2>
+
+            <div id="assignmentList">
+                <div class="loading">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ANNOUNCEMENTS -->
+
+        <div id="announcements" class="section">
+
+            <h2>Announcements</h2>
+
+            <div id="announcementList">
+                <div class="loading">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- EVENTS -->
+
+        <div id="events" class="section">
+
+            <h2>College Events</h2>
+
+            <div id="eventList">
+                <div class="loading">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- AI -->
+
+        <div id="ai" class="section">
+
+            <h2>AI Assistant 🤖</h2>
+
+            <input
+                type="text"
+                id="aiQuestion"
+                placeholder="Ask something..."
+            >
+
+            <button onclick="askAI()">
+                Ask
+            </button>
+
+            <div id="aiAnswer" class="info" style="margin-top:15px;">
+                Ask a question about CampusConnect.
+            </div>
+
+        </div>
+
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+
+async function apiGet(endpoint) {
+
+    const response = await fetch(
+        API_URL + endpoint
+    );
+
+    if (!response.ok) {
+        throw new Error("API request failed");
+    }
+
+    return await response.json();
+}
+
+
+async function apiPost(endpoint, data) {
+
+    const response = await fetch(
+        API_URL + endpoint,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("API request failed");
+    }
+
+    return await response.json();
+}
+
+
+async function login() {
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const error =
+        document.getElementById("loginError");
+
+    error.innerText = "";
+
+    if (!username || !password) {
+
+        error.innerText =
+            "Please enter username and password.";
+
+        return;
+    }
+
+    try {
+
+        const data = await apiPost(
+            "/login",
+            {
+                username: username,
+                password: password
+            }
+        );
+
+        if (data.success) {
+
+            document.getElementById("loginPage")
+                .style.display = "none";
+
+            document.getElementById("appPage")
+                .style.display = "block";
+
+            loadData();
+
+        } else {
+
+            error.innerText =
+                "Invalid username or password.";
+
+        }
+
+    } catch (err) {
+
+        error.innerText =
+            "Unable to connect to FastAPI.";
+
+    }
+}
+
+
+async function loadData() {
+
+    try {
+
+        const student =
+            await apiGet("/student");
+
+        const attendance =
+            await apiGet("/attendance");
+
+        const fees =
+            await apiGet("/fees");
+
+        const assignments =
+            await apiGet("/assignments");
+
+        const timetable =
+            await apiGet("/timetable");
+
+        const announcements =
+            await apiGet("/announcements");
+
+        const events =
+            await apiGet("/events");
+
+
+        // Student
+
+        const rollNo =
+            student.roll_no || "-";
+
+        const department =
+            student.department || "-";
+
+
+        document.getElementById("rollNo")
+            .innerText = rollNo;
+
+        document.getElementById("dashboardRoll")
+            .innerText = rollNo;
+
+        document.getElementById("profileRoll")
+            .innerText = rollNo;
+
+        document.getElementById("dashboardDepartment")
+            .innerText = department;
+
+        document.getElementById("profileDepartment")
+            .innerText = department;
+
+
+        // Attendance
+
+        if (attendance.length > 0) {
+
+            const average =
+                attendance.reduce(
+                    (sum, item) =>
+                        sum + Number(item.percentage || 0),
+                    0
+                ) / attendance.length;
+
+            document.getElementById(
+                "attendanceValue"
+            ).innerText =
+                average.toFixed(1) + "%";
+        }
+
+
+        let attendanceHTML = "";
+
+        attendance.forEach(item => {
+
+            attendanceHTML += `
+                <div class="item">
+                    <strong>
+                        ${item.subject || "-"}
+                    </strong>
+
+                    <div class="status">
+                        ${item.percentage || 0}%
+                    </div>
+                </div>
+            `;
+
+        });
+
+        document.getElementById(
+            "attendanceList"
+        ).innerHTML =
+            attendanceHTML || "No attendance data";
+
+
+        // Fees
+
+        document.getElementById("totalFee")
+            .innerText =
+            "₹" + (fees.total_fee || 0);
+
+        document.getElementById("paidFee")
+            .innerText =
+            "₹" + (fees.paid_fee || 0);
+
+        document.getElementById("balanceFee")
+            .innerText =
+            "₹" + (fees.balance_fee || 0);
+
+
+        // Assignments
+
+        const pending =
+            assignments.filter(
+                item =>
+                    String(item.status)
+                        .toLowerCase() === "pending"
+            ).length;
+
+        document.getElementById(
+            "pendingAssignments"
+        ).innerText = pending;
+
+
+        let assignmentHTML = "";
+
+        assignments.forEach(item => {
+
+            assignmentHTML += `
+                <div class="item">
+
+                    <strong>
+                        ${item.title || "-"}
+                    </strong>
+
+                    <br>
+
+                    Subject:
+                    ${item.subject || "-"}
+
+                    <br>
+
+                    Due Date:
+                    ${item.due_date || "-"}
+
+                    <div class="status">
+                        ${item.status || "-"}
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+        document.getElementById(
+            "assignmentList"
+        ).innerHTML =
+            assignmentHTML || "No assignments";
+
+
+        // Timetable
+
+        let timetableHTML = "";
+
+        timetable.forEach(item => {
+
+            timetableHTML += `
+                <div class="item">
+
+                    <strong>
+                        ${item.day || "-"}
+                    </strong>
+
+                    <br>
+
+                    ${item.subject || "-"}
+
+                    <br>
+
+                    ${item.time || ""}
+
+                </div>
+            `;
+
+        });
+
+        document.getElementById(
+            "timetableList"
+        ).innerHTML =
+            timetableHTML || "No timetable";
+
+
+        // Announcements
+
+        let announcementHTML = "";
+
+        announcements.forEach(item => {
+
+            announcementHTML += `
+                <div class="item">
+
+                    <strong>
+                        ${item.title || "-"}
+                    </strong>
+
+                    <br>
+
+                    ${item.message || item.description || ""}
+
+                </div>
+            `;
+
+        });
+
+        document.getElementById(
+            "announcementList"
+        ).innerHTML =
+            announcementHTML || "No announcements";
+
+
+        // Events
+
+        let eventHTML = "";
+
+        events.forEach(item => {
+
+            eventHTML += `
+                <div class="item">
+
+                    <strong>
+                        ${item.title || "-"}
+                    </strong>
+
+                    <br>
+
+                    ${item.date || item.event_date || ""}
+
+                    <br>
+
+                    ${item.description || ""}
+
+                </div>
+            `;
+
+        });
+
+        document.getElementById(
+            "eventList"
+        ).innerHTML =
+            eventHTML || "No events";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+}
+
+
+function showSection(sectionId) {
+
+    const sections =
+        document.querySelectorAll(".section");
+
+    sections.forEach(section => {
+        section.classList.remove("active");
+    });
+
+    document.getElementById(sectionId)
+        .classList.add("active");
+
+}
+
+
+async function askAI() {
+
+    const question =
+        document.getElementById("aiQuestion")
+            .value;
+
+    if (!question) {
+        return;
+    }
+
+    document.getElementById(
+        "aiAnswer"
+    ).innerText = "Thinking...";
+
+    try {
+
+        const data = await apiPost(
+            "/ask",
+            {
+                question: question
+            }
+        );
+
+        if (
+            data.answers &&
+            data.answers.length > 0
+        ) {
+
+            document.getElementById(
+                "aiAnswer"
+            ).innerText =
+                data.answers[0].answer;
+
+        } else {
+
+            document.getElementById(
+                "aiAnswer"
+            ).innerText =
+                "No answer found.";
+
+        }
+
+    } catch (error) {
+
+        document.getElementById(
+            "aiAnswer"
+        ).innerText =
+            "Unable to connect to AI Assistant.";
+
+    }
+}
+
+
+function logout() {
+
+    document.getElementById("appPage")
+        .style.display = "none";
+
+    document.getElementById("loginPage")
+        .style.display = "block";
+
+    document.getElementById("username")
+        .value = "";
+
+    document.getElementById("password")
+        .value = "";
+
+}
+
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then(() => {
+                    console.log(
+                        "Service Worker registered"
+                    );
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+</html>

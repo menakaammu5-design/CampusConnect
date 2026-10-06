@@ -7,9 +7,9 @@ import pandas as pd
 # CONFIGURATION
 # =========================================================
 
-
-API_URL = "https://campusconnect-api-xp25.onrender.com"
+# API_URL = "https://campusconnect-api-xp25.onrender.com"
 API_URL = "http://127.0.0.1:8000"
+
 st.set_page_config(
     page_title="CampusConnect",
     page_icon="🎓",
@@ -65,7 +65,6 @@ def api_post(endpoint, data):
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-
 
 if "username" not in st.session_state:
     st.session_state.username = ""
@@ -177,26 +176,17 @@ if not st.session_state.logged_in:
 
             else:
 
-                # -------------------------------------------------
-                # CHECK LOGIN RESULT
-                # -------------------------------------------------
-
                 login_success = result.get(
                     "success",
                     False
                 )
 
-                # Some API versions may return status=True
                 if not login_success:
 
                     login_success = result.get(
                         "status",
                         False
                     )
-
-                # -------------------------------------------------
-                # SUCCESS
-                # -------------------------------------------------
 
                 if login_success:
 
@@ -271,6 +261,9 @@ student_name = student.get(
     "Student"
 )
 
+# UI display name
+display_name = "Admin"
+
 roll_no = student.get(
     "roll_no",
     "-"
@@ -308,7 +301,7 @@ page = st.sidebar.radio(
 st.sidebar.markdown("---")
 
 st.sidebar.write(
-    f"👩‍🎓 {student_name}"
+    f"👩‍💼 {display_name}"
 )
 
 st.sidebar.write(
@@ -347,7 +340,7 @@ if page == "🏠 Dashboard":
     st.title("🎓 CampusConnect")
 
     st.subheader(
-        f"Welcome, {student_name} 👋"
+        f"Welcome, {display_name} 👋"
     )
 
     st.markdown("---")
@@ -416,7 +409,7 @@ if page == "🏠 Dashboard":
         st.info("👤 Student")
 
         st.write(
-            f"**{student_name}**"
+            f"**{display_name}**"
         )
 
         st.write(roll_no)
@@ -493,7 +486,7 @@ elif page == "👤 Student Profile":
 
         st.write("### Name")
 
-        st.info(student_name)
+        st.info(display_name)
 
         st.write("### Roll Number")
 
@@ -853,4 +846,3 @@ elif page == "💬 AI Assistant":
                         st.success(
                             item["answer"]
                         )
-                        
